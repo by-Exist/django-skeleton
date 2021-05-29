@@ -1,12 +1,11 @@
 # global ignore setting
 .vscode/
+__pycache__
 *.env
 !example.env
-
 
 # backend ignore setting
 backend/static/
 db.sqlite3
-
 
 # frontend ignore setting
