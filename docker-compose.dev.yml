@@ -1,0 +1,23 @@
+version: "3.8"
+
+volumes:
+  db_volume:
+
+# If you need to keep the container running,
+# command: tail -f /dev/null
+services:
+  # Web Application Server (Django)
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    volumes:
+      - ./backend:/app
+    restart: always
+    command: >
+      sh -c "
+      python manage.py makemigrations
+      && python manage.py migrate
+      && python manage.py collectstatic --noinput --verbosity 0
+      && python manage.py runserver"
+    env_file: backend/env/dev.env

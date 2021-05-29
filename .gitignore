@@ -1,0 +1,12 @@
+# global ignore setting
+.vscode/
+*.env
+!example.env
+
+
+# backend ignore setting
+backend/static/
+db.sqlite3
+
+
+# frontend ignore setting
