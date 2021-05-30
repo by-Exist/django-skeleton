@@ -20,7 +20,7 @@ REST_FRAMEWORK = {
     "DEFAULT_THROTTLE_CLASSES": [],
     "DEFAULT_CONTENT_NEGOTIATION_CLASS": "rest_framework.negotiation.DefaultContentNegotiation",
     "DEFAULT_METADATA_CLASS": "rest_framework.metadata.SimpleMetadata",
-    "DEFAULT_VERSIONING_CLASS": None,
+    "DEFAULT_VERSIONING_CLASS": "rest_framework.versioning.URLPathVersioning",
     # Generic view behavior
     "DEFAULT_PAGINATION_CLASS": None,
     "DEFAULT_FILTER_BACKENDS": [],

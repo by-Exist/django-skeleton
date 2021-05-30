@@ -7,6 +7,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Local apps
+    "apps.exampleapp",
     # Third apps
     "rest_framework",
     "drf_spectacular",
