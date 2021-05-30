@@ -2,6 +2,7 @@
 .vscode/
 __pycache__
 *.env
+*.pyc
 !example.env
 
 # backend ignore setting

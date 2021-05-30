@@ -1,12 +1,6 @@
-INSTALLED_APPS = [
-    # Django apps
-    "django.contrib.admin",
-    "django.contrib.auth",
-    "django.contrib.contenttypes",
-    "django.contrib.sessions",
-    "django.contrib.messages",
-    "django.contrib.staticfiles",
-    # Local apps
+from config.settings.common import INSTALLED_APPS
+
+INSTALLED_APPS += [
     # Third apps
     "debug_toolbar",
 ]

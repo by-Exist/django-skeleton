@@ -1,0 +1,8 @@
+-r ./common.txt
+
+# Django
+
+# REST API
+
+# WSGI
+gevent==21.1.2

@@ -12,6 +12,6 @@ SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
-ROOT_URLCONF = "config.urls"
+ROOT_URLCONF = "api.urls"
 
 WSGI_APPLICATION = "config.wsgi.application"
