@@ -1,5 +1,5 @@
 # Mine
-drf-custom-method==0.0.1
+drf-custom-method==0.0.10
 
 # Django
 Django==3.2
@@ -10,7 +10,6 @@ Pillow==8.2.0
 djangorestframework==3.12.4
 drf-spectacular
 django-filter==2.4.0
-drf-nested-routers==0.93.3
 
 # WSGI
 gunicorn==20.1.0

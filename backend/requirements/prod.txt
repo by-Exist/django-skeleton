@@ -1,8 +1,9 @@
 -r ./common.txt
 
 # Django
-
-# REST API
+django-storages==1.11.1
+boto3
+psycopg2-binary
 
 # WSGI
 gevent==21.1.2
