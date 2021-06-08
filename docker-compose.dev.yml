@@ -3,36 +3,33 @@ version: "3.8"
 volumes:
   db_volume:
 
-# If you need to keep the container running,
-# command: tail -f /dev/null
 services:
+  # If you need to keep the container running,
+  # command: tail -f /dev/null
+
   # Database Server (Postgres)
   database:
     image: postgres:latest
     volumes:
       - db_volume:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_USER=db_user
-      - POSTGRES_PASSWORD=db_password
-      - POSTGRES_DB=db_name
-      - POSTGRES_INITDB_ARGS=--encoding=UTF-8
+    env_file: ./env/dev.env
 
   # Web Application Server (Django)
   backend:
     depends_on:
       - database
     build:
-      context: ../backend
-      dockerfile: ../docker/Dockerfile.dev
-    env_file: ../env/backend/dev.env
+      context: ./backend
+      dockerfile: ./Dockerfile.dev
+    env_file: ./env/dev.env
     command: >
       sh -c "
       python manage.py makemigrations
       && python manage.py migrate
       && python manage.py collectstatic --noinput --verbosity 0
-      && gunicorn -c ./gunicorn.conf.py config.wsgi:application"
+      && gunicorn"
     volumes:
-      - ../backend:/app
+      - ./backend:/app
     restart: always
 
   # Web Server (Nginx)
@@ -43,6 +40,6 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ../backend/static/media/:/media/
-      - ../backend/static/static/:/static/
-      - ../nginx/dev.conf:/etc/nginx/nginx.conf:ro
+      - ./backend/static/media/:/media/
+      - ./backend/static/static/:/static/
+      - ./nginx/dev/nginx.conf:/etc/nginx/nginx.conf:ro

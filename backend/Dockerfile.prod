@@ -9,8 +9,14 @@ ENV PYTHONFAULTHANDLER=1 \
     PIP_DEFAULT_TIMEOUT=100
 
 # python dependency library install
-COPY ./requirements/common.txt ./requirements/dev.txt /app/requirements/
-RUN pip install -r /app/requirements/dev.txt
+COPY ./requirements/common.txt ./requirements/prod.txt /app/requirements/
+RUN pip install -r /app/requirements/prod.txt
+
+# copy project files
+COPY . /app
 
 # change work directory
 WORKDIR /app
+
+# set django settings module env
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
