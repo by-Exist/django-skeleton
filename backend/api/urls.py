@@ -1,19 +1,19 @@
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib import admin
-from django.urls import path, include, register_converter
-from drf_custom_method.routers import CustomMethodSimpleRouter
-from drf_spectacular.views import (
-    SpectacularAPIView,
-    SpectacularRedocView,
-    SpectacularSwaggerView,
+from django.urls import register_converter
+from drf_custom_method.routers import (
+    CustomMethodSimpleRouter,
+    NestedCustomMethodSimpleRouter,
+    NestedSingletonResourceCustomMethodSimpleRouter,
 )
-import debug_toolbar
-from apps.exampleapp.views import ExampleViewSet
+from apps.exampleapp.views import (
+    UserViewSet,
+    PostViewSet,
+    GroupViewSet,
+    UserSettingViewSet,
+)
 from .converters import VersionConverter
 
 
-# API Version    TODO: Move settings?
+# API Version
 # =============================================================================
 API_VERSION = "v1"
 
@@ -25,56 +25,31 @@ register_converter(VersionConverter, "version")
 
 # Router
 # =============================================================================
-api_router = CustomMethodSimpleRouter()
-api_router.trailing_slash = "/?"
+router = CustomMethodSimpleRouter()
+router.trailing_slash = "/?"
+router.register("users", UserViewSet, basename="user")
+router.register("posts", PostViewSet, basename="post")
+router.register("groups", GroupViewSet, basename="group")
+
+users_nested_router = NestedCustomMethodSimpleRouter(router, "users", lookup="user")
+users_nested_router.trailing_slash = "/?"
+
+users_nested_singleton_router = NestedSingletonResourceCustomMethodSimpleRouter(
+    router, "users", lookup="user"
+)
+users_nested_singleton_router.trailing_slash = "/?"
+users_nested_singleton_router.register(
+    "setting", UserSettingViewSet, basename="setting"
+)
 
 
 # API URL Build
 # =============================================================================
-api_router.register("examples", ExampleViewSet, basename="example")
-
-api_urls = [
-    *api_router.urls,
-]
-
-
-# Result URLs
-# =============================================================================
 urlpatterns = [
-    # Admin urls
-    path("admin/", admin.site.urls),
-    # DRF Browserable urls
-    path("api-auth/", include("rest_framework.urls")),
-    # API urls
-    path(f"api/<version:version>/", include(api_urls)),
-    # Schema urls
-    path(
-        "api/<version:version>/schema/",
-        SpectacularAPIView.as_view(api_version=API_VERSION),
-        name="schema",
-    ),
-    path(
-        "api/<version:version>/schema/swagger/",
-        SpectacularSwaggerView.as_view(url_name="schema"),
-        name="swagger",
-    ),
-    path(
-        "api/<version:version>/schema/redoc/",
-        SpectacularRedocView.as_view(url_name="schema"),
-        name="redoc",
-    ),
+    *router.urls,
+    *users_nested_router.urls,
+    *users_nested_singleton_router.urls,
 ]
-
-if settings.DEBUG:
-    urlpatterns = [
-        # Common urls
-        *urlpatterns,
-        # Serving static file urls
-        *static(settings.STATIC_URL, document_root=settings.STATIC_ROOT),
-        *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
-        # Debug toolbar urls
-        path("__debug__/", include(debug_toolbar.urls)),
-    ]
 
 
 # Load Schema
