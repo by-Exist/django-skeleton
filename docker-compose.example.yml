@@ -1,0 +1,61 @@
+version: "3.8"
+
+services:
+  # If you need to keep the container running,
+  # command: tail -f /dev/null
+
+  # Database Server (Postgres)
+  database:
+    image: postgres:latest
+    volumes:
+      - db_volume:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
+      - POSTGRES_INITDB_ARGS
+    restart: always
+
+  # Application Server (Django)
+  backend:
+    image: your django container image
+    environment:
+      - DEBUG
+      - DJANGO_SECRET_KEY
+      - DJANGO_ALLOWED_HOSTS
+      - DJANGO_DEFAULT_DATABASE_URL
+      - DJANGO_STORAGE_ACCESS_KEY_ID
+      - DJANGO_STORAGE_SECRET_ACCESS_KEY
+      - DJANGO_STATIC_STORAGE_BUCKET_NAME
+      - DJANGO_MEDIA_STORAGE_BUCKET_NAME
+      - GUNICORN_FORWARDED_ALLOW_IPS
+      - GUNICORN_PROXY_ALLOW_IPS
+    command: >
+      sh -c "
+      python manage.py makemigrations
+      && python manage.py migrate
+      && python manage.py collectstatic --noinput --verbosity 0
+      && gunicorn"
+    restart: always
+
+  # Web Server (Nginx)
+  web:
+    image: your web container image
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/nginx/ssl/${DOMAIN}.crt
+      - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/nginx/ssl/${DOMAIN}.key
+    command: >
+      sh -c "
+      envsubst '$$NGINX_DOMAIN $$NGINX_STATIC_STORAGE_BUCKET_URL $$NGINX_MEDIA_STORAGE_BUCKET_URL' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf
+      && nginx -g 'daemon off;'"
+    environment:
+      - NGINX_DOMAIN
+      - NGINX_STATIC_STORAGE_BUCKET_URL
+      - NGINX_MEDIA_STORAGE_BUCKET_URL
+    restart: always
+
+volumes:
+  db_volume:
