@@ -4,6 +4,7 @@ __pycache__
 *.env
 *.pyc
 !example.env
+docker-compose.prod.yml
 
 # backend ignore setting
 backend/static/
