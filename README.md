@@ -1,0 +1,128 @@
+# README
+
+- 서비스를 구현하기 위한 단계를 정리한 레포지토리입니다.
+
+## 서버 대여 및 도메인 설정
+
+### 서버 대여
+
+- 서버 대여 - [vultr](https://www.vultr.com/)
+  - docker, ubuntu 18.04 x64
+- 인증서 무료 발급 - [내도메인.한국](내도메인.한국)
+  - 만료 30일 전 도메인 설정 창에 연장 기능이 활성화
+  - 도메인을 선택하고 ip를 서버와 연결
+
+## 인증서 발급 방법
+
+- certbot을 활용한 무료 인증서 발급
+  - 발급 방법
+    - --webroot
+    - **--nginx (or --apache), 해당 방식 활용**
+    - --standalone
+    - --dns-...
+
+```bash
+# 인증서 발급 프로그램 설치 (certbot, python3-certbot-nginx)
+apt-get install -y certbot python3-certbot-nginx
+
+# 방화벽
+ufw app list  # 참고
+ufw allow 'Nginx Full'
+ufw status  # 방화벽 설정 확인
+
+# 인증서 발급
+certbot certonly --nginx \
+  -d $DOMAIN \
+  -m $EMAIL \
+  --agree-tos \
+  --no-eff-email
+# 출력 문구 꼭 한번 읽어 보세요.
+# fullchain.pem = certificate file
+# privkey.pem = private key
+
+# 도메인 발급에 사용된 nginx 프로세스 종료
+nginx -s quit
+```
+
+## 컨테이너 구성
+
+### portainer 컨테이너 생성
+
+```bash
+# portainer 볼륨 생성
+docker volume create portainer_data
+
+# portainer 컨테이너 생성 (with ssl)
+docker run -d \
+  --name portainer \
+  --restart always \
+  -p 9000:9000 \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v portainer_data:/data \
+  -v /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/${DOMAIN}/fullchain.pem \
+  -v /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/${DOMAIN}/privkey.pem \
+  portainer/portainer-ce \
+  --ssl \
+  --sslcert /${DOMAIN}/fullchain.pem \
+  --sslkey /${DOMAIN}/privkey.pem
+```
+
+### portainer 컨테이너 설정
+
+```bash
+# 스웜 모드 설정
+docker swarm init
+```
+
+- portainer 서비스 접속
+  - https://$DOMAIN:9000 (아이피 말고 도메인으로 접속)
+- portainer 어드민 계정 생성
+- Docker 선택 후 Connect
+
+## 인증서 갱신
+
+### 인증서 갱신 방법
+
+```bash
+# 인증서 갱신 관련 명령어
+certbot renew --nginx  # 만료일 30일 이내라면 갱신
+certbot renew --nginx --dry-run  # 갱신 가능 테스팅
+certbot renew --nginx --force-renewal  # 강제 갱신 (필요한 경우)
+```
+
+### 인증서 갱신 훅 파일 작성
+
+```bash
+# 인증서 갱신 훅 설정 폴더로 이동 (pre, post, deploy)
+# pre 갱신 전, post 갱신 후, deploy 갱신 성공 후
+cd /etc/letsencrypt/renewal-hooks/deploy/
+
+# nano 에디터를 활용하여 인증서 갱신 후 실행될 bash 스크립트 작성
+# ctrl+x=파일닫기 -> Y저장 -> 파일명입력후Enter
+# nano 001_portainer_restart.sh
+#!/bin/bash
+docker restart $PORTAINER_CONTAINER_NAME
+# nano 002_nginx_restart.sh (필요하다면)
+#!/bin/bash
+docker exec -it $NGINX_CONTAINER_NAME nginx -s reload
+
+# 작성된 파일 실행 모드로 변경
+chmod u+x script1.sh script2.sh ...
+
+# bash 파일 실행 여부 확인
+certbot renew --nginx --dry-run
+```
+
+### crontab을 활용하여 인증서 갱신 자동화
+
+```bash
+# cron 활용법
+crontab -e  # 활성 사용자의 cron 파일 작성 (nano 사용해서 작성하자), 라인 추가 방식
+crontab -l  # 사용자가 작성한 cron 파일 출력
+crontab -r  # 모든 cron 삭제
+
+# 인증서 갱신 cron 설정
+# crontab 시간 설정 도우미 사이트 (https://crontab.guru/)
+# 매주 월요일 04:00시에 certbot renew --nginx 실행
+0 4 * * 1 certbot renew --nginx
+```
