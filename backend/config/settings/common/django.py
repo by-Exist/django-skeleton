@@ -11,7 +11,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent.parent
 DEBUG = env.bool("DEBUG")
 SECRET_KEY = env.str("DJANGO_SECRET_KEY")
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
-ROOT_URLCONF = "config.settings.urls"
+ROOT_URLCONF = "config.urls"
 WSGI_APPLICATION = "config.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
