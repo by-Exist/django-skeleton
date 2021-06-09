@@ -1,9 +1,9 @@
 # global ignore setting
 .vscode/
 __pycache__
-*.env
+.env.*
+!.env.example
 *.pyc
-!example.env
 docker-compose.prod.yml
 
 # backend ignore setting

@@ -12,7 +12,7 @@ services:
     image: postgres:latest
     volumes:
       - db_volume:/var/lib/postgresql/data
-    env_file: ./env/dev.env
+    env_file: .env.dev
 
   # Web Application Server (Django)
   backend:
@@ -21,7 +21,7 @@ services:
     build:
       context: ./backend
       dockerfile: ./Dockerfile.dev
-    env_file: ./env/dev.env
+    env_file: .env.dev
     command: >
       sh -c "
       python manage.py makemigrations
