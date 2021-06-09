@@ -1,11 +1,12 @@
 # Django
 Django==3.2
-django-environ==0.4.5
-Pillow==8.2.0
+django-environ==0.4.5  # manage environ
+Pillow==8.2.0  # Imagefield
 
 # REST API
-djangorestframework==3.12.4
-drf-spectacular
+djangorestframework==3.12.4  # REST
+drf-spectacular  # api document
+drf-access-policy  # permission
 django-filter==2.4.0
 
 # WSGI
