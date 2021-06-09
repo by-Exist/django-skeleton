@@ -1,5 +1,5 @@
 from django.urls import register_converter
-from drf_custom_method.routers import (
+from utils.drf_custom_method.routers import (
     CustomMethodSimpleRouter,
     NestedCustomMethodSimpleRouter,
     NestedSingletonResourceCustomMethodSimpleRouter,
