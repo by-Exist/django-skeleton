@@ -14,7 +14,10 @@ REST_FRAMEWORK = DEFAULTS
 # =============================================================================
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 INSTALLED_APPS += ["drf_spectacular"]
+REST_FRAMEWORK[
+    "DEFAULT_SCHEMA_CLASS"
+] = "utils.custom_drf_spectacular.openapi.CustomAutoSchema"
 SPECTACULAR_SETTINGS = SPECTACULAR_DEFAULTS
+SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"] = "/api/v[0-9]+/"
 SPECTACULAR_SETTINGS["COMPONENT_SPLIT_REQUEST"] = True
 SPECTACULAR_SETTINGS["SERVE_INCLUDE_SCHEMA"] = False
-SPECTACULAR_SETTINGS["SORT_OPERATION_PARAMETERS"] = False

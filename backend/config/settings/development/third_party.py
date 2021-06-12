@@ -22,7 +22,8 @@ REST_FRAMEWORK[
 # DRF Spectacular
 # =============================================================================
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
-REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
 SPECTACULAR_SETTINGS["TITLE"] = "Backend Development API"
 SPECTACULAR_SETTINGS["DESCRIPTION"] = "Backend development api description..."
 SPECTACULAR_SETTINGS["VERSION"] = "0.0.1"
+# https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
+SPECTACULAR_SETTINGS["SWAGGER_UI_SETTINGS"]["displayRequestDuration"] = True
