@@ -7,6 +7,7 @@ Pillow==8.2.0  # Imagefield
 djangorestframework==3.12.4  # REST
 drf-spectacular  # api document
 drf-access-policy  # permission
+drf-nested-routers  # nested router
 django-filter==2.4.0
 
 # WSGI
