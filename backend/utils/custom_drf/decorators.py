@@ -1,7 +1,7 @@
 from rest_framework.decorators import MethodMapper, pretty_name
 
 
-def custom_action(
+def action(
     methods=None,
     detail: bool = None,
     # here
@@ -11,8 +11,6 @@ def custom_action(
     **kwargs
 ):
     """
-    [Google API Guide - CustomMethod](https://cloud.google.com/apis/design/custom_methods?hl=ko)
-
     rest_framework.decorators의 action 함수를 확장한 데코레이터
 
     custom_method 인자가 추가되었다
@@ -23,6 +21,9 @@ def custom_action(
     methods = [method.lower() for method in methods]
 
     assert detail is not None, "@action() missing required argument: 'detail'"
+    assert (
+        custom_method is True and "patch" not in methods
+    ), "HTTP method PATCH는 커스텀 메소드로 사용할 수 없습니다."
 
     if "name" in kwargs and "suffix" in kwargs:
         raise TypeError("`name` and `suffix` are mutually exclusive arguments.")
