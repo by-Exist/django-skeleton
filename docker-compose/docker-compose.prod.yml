@@ -18,7 +18,7 @@ services:
 
   # Application Server (Django)
   backend:
-    image: your django container image
+    image: bolk9652/skeletonv2:latest
     environment:
       - DEBUG
       - DJANGO_SECRET_KEY
@@ -40,13 +40,13 @@ services:
 
   # Web Server (Nginx)
   web:
-    image: your web container image
+    image: bolk9652/skeletonv_nginx_test:latest
     ports:
       - 80:80
       - 443:443
     volumes:
-      - /etc/letsencrypt/live/${DOMAIN}/fullchain.pem:/etc/nginx/ssl/${DOMAIN}.crt
-      - /etc/letsencrypt/live/${DOMAIN}/privkey.pem:/etc/nginx/ssl/${DOMAIN}.key
+      - /etc/letsencrypt/live/server-testing.kro.kr/fullchain.pem:/etc/nginx/ssl/server-testing.kro.kr.crt
+      - /etc/letsencrypt/live/server-testing.kro.kr/privkey.pem:/etc/nginx/ssl/server-testing.kro.kr.key
     command: >
       sh -c "
       envsubst '$$NGINX_DOMAIN $$NGINX_STATIC_STORAGE_BUCKET_URL $$NGINX_MEDIA_STORAGE_BUCKET_URL' < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf

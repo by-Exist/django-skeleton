@@ -1,13 +1,16 @@
-# global ignore setting
+# IDE
 .vscode/
+
+# Python
 __pycache__
-.env.*
-!.env.example
 *.pyc
-docker-compose.prod.yml
+
+# Environment
+.env.*
+!.env.*.example
+
+# frontend ignore setting
 
 # backend ignore setting
 backend/static/
 db.sqlite3
-
-# frontend ignore setting
