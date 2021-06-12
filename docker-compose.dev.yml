@@ -38,7 +38,7 @@ services:
       - backend
     image: nginx:alpine
     ports:
-      - "8000:8000"
+      - "80:80"
     volumes:
       - ./backend/static/media/:/media/
       - ./backend/static/static/:/static/
