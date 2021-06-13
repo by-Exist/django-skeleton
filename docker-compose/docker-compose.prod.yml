@@ -16,6 +16,14 @@ services:
       - POSTGRES_INITDB_ARGS
     restart: always
 
+  # Cache Server (Cachalot)
+  cachalot-cache:
+    image: memcached:latest
+  environment:
+    - MEMCACHED_CACHE_SIZE
+    - MEMCACHED_MAX_CONNECTIONS
+    - MEMCACHED_THREADS
+
   # Application Server (Django)
   backend:
     image: bolk9652/skeletonv2:latest

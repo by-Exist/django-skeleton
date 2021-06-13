@@ -49,6 +49,14 @@ MIDDLEWARE = [
 DATABASES = {"default": env.db("DJANGO_DEFAULT_DATABASE_URL")}
 
 
+# Caches
+# =============================================================================
+# https://docs.djangoproject.com/en/3.2/ref/settings/#std:setting-CACHES
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache",},
+}
+
+
 # Password Validators
 # =============================================================================
 AUTH_PASSWORD_VALIDATORS = [

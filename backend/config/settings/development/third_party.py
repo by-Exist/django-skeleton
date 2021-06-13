@@ -1,4 +1,5 @@
 from .django import *
+from debug_toolbar.settings import PANELS_DEFAULTS
 
 
 # Django Debug Toolbar
@@ -27,3 +28,9 @@ SPECTACULAR_SETTINGS["DESCRIPTION"] = "Backend development api description..."
 SPECTACULAR_SETTINGS["VERSION"] = "0.0.1"
 # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
 SPECTACULAR_SETTINGS["SWAGGER_UI_SETTINGS"]["displayRequestDuration"] = True
+
+
+# Django Cachalot
+# =============================================================================
+# https://django-cachalot.readthedocs.io/en/latest/quickstart.html#settings
+PANELS_DEFAULTS += ["cachalot.panels.CachalotPanel"]

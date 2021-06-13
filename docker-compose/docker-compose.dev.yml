@@ -14,10 +14,15 @@ services:
       - db_volume:/var/lib/postgresql/data
     env_file: ../env/.env.dev
 
+  # Cache Server (Cachalot)
+  cachalot-cache:
+    image: memcached:latest
+
   # Web Application Server (Django)
   backend:
     depends_on:
       - database
+      - cachalot-cache
     build:
       context: ../backend
       dockerfile: ./Dockerfile.dev
