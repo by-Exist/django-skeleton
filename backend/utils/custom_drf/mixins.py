@@ -1,6 +1,7 @@
 from rest_framework import status
-from rest_framework.settings import api_settings
 from rest_framework.response import Response
+from rest_framework.settings import api_settings
+from rest_framework.serializers import BooleanField
 
 
 # 부작용, 멱등성
@@ -26,7 +27,16 @@ from rest_framework.response import Response
 # Custom Mixins
 # =============================================================================
 # List = GET HTTP method + collection uri
-from rest_framework.mixins import ListModelMixin
+class ListModelMixin:
+    """
+    List a queryset.
+    """
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
 
 # Create = POST HTTP method + collection uri
@@ -107,3 +117,44 @@ class ModifyModelMixin:
 
 # Destroy = DELETE HTTP method + resource uri
 from rest_framework.mixins import DestroyModelMixin
+
+
+# Util Mixins
+# =============================================================================
+class CheckPageableMixin:
+    @property
+    def paginator(self):
+        if not hasattr(self, "_paginator"):
+            if self.pagination_class is None:
+                raise AssertionError("뷰에 pagination_class가 지정되지 않았습니다.")
+            else:
+                self._paginator = self.pagination_class()
+        assert (
+            self._paginator.page_size
+        ), "page_size가 지정되어 있지 않습니다. pagination_class에 page_size가 지정되지 않았거나 api_settings.PAGE_SIZE가 설정되지 않았습니다."
+        return self._paginator
+
+
+class AddValidateOnlyFieldMixin:
+
+    validate_only_actions = []
+    allow_validate_only_methods = ["POST", "PUT", "PATCH"]
+
+    def get_serializer(self, *args, **kwargs):
+        serializer = super().get_serializer(*args, **kwargs)
+
+        if self.action not in self.validate_only_actions:
+            return serializer
+
+        assert (
+            self.method in self.allow_validate_only_methods
+        ), "validate_only 기능은 body를 사용할 수 있는 http request ({})에서만 사용할 수 있습니다. ".format(
+            self.action, ", ".join(self.allow_validate_only_methods)
+        )
+
+        validate_only_field = BooleanField(
+            write_only=True, required=False, help_text="필드의 유효성 검사만을 수행합니다.",
+        )
+        serializer.fields["validate_only"] = validate_only_field
+
+        return serializer
