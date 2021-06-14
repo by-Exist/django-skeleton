@@ -10,13 +10,6 @@ def action(
     url_name: str = None,
     **kwargs
 ):
-    """
-    rest_framework.decorators의 action 함수를 확장한 데코레이터
-
-    custom_method 인자가 추가되었다
-
-    해당 인자의 값은 drf_custom_method.routers의 CustomMethodRouter에서 활용된다
-    """
     methods = ["get"] if (methods is None) else methods
     methods = [method.lower() for method in methods]
 
