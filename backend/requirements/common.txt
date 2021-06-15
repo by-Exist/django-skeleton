@@ -10,7 +10,7 @@ drf-access-policy  # permission
 drf-nested-routers  # nested router
 django-cachalot   # table cache
 python-memcached   # memcached
-django-filter==2.4.0
+django-filter  # filtering
 
 # WSGI
 gunicorn==20.1.0

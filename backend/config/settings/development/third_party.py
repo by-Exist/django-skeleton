@@ -7,9 +7,8 @@ from debug_toolbar.settings import PANELS_DEFAULTS
 # https://django-debug-toolbar.readthedocs.io/en/latest/configuration.html
 INSTALLED_APPS += ["debug_toolbar"]
 MIDDLEWARE = ["debug_toolbar.middleware.DebugToolbarMiddleware"] + MIDDLEWARE
-DEBUG_TOOLBAR_CONFIG = {
-    "SHOW_TOOLBAR_CALLBACK": lambda request: True,
-}
+DEBUG_TOOLBAR_CONFIG = {}
+DEBUG_TOOLBAR_CONFIG["SHOW_TOOLBAR_CALLBACK"] = lambda request: True
 
 
 # Django REST Framework
