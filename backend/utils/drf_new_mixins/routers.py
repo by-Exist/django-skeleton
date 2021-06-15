@@ -1,8 +1,6 @@
 from rest_framework.routers import (
     Route,
     DynamicRoute,
-    SimpleRouter as OriginSimpleRouter,
-    DefaultRouter as OriginDefaultRouter,
 )
 
 custom_method_routes = [
@@ -44,11 +42,3 @@ custom_method_routes = [
         initkwargs={},
     ),
 ]
-
-
-class SimpleRouter(OriginSimpleRouter):
-    routes = custom_method_routes
-
-
-class DefaultRouter(OriginDefaultRouter):
-    routes = custom_method_routes

@@ -1,4 +1,6 @@
+from rest_framework import mixins as rest_mixins
 from rest_framework.response import Response
+from .exceptions import PaginatorNotFound
 
 
 # 부작용, 멱등성
@@ -21,10 +23,22 @@ from rest_framework.response import Response
 # Delete        DELETE + resource   X                       X
 
 
+# Util Mixins
+# =============================================================================
+class RequiredPaginationMixin:
+    def paginate_queryset(self, queryset):
+        if self.paginator is None:
+            msg = "paginator를 찾을 수 없습니다. pagination_class가 지정되었는지 확인하세요."
+            raise PaginatorNotFound(msg)
+        return self.paginator.paginate_queryset(queryset, self.request, view=self)
+
+
 # Custom Mixins
 # =============================================================================
 # List = GET + collection uri
-from rest_framework.mixins import ListModelMixin
+class ListModelMixin(RequiredPaginationMixin, rest_mixins.ListModelMixin):
+    pass
+
 
 # Retrieve = GET + resource uri
 from rest_framework.mixins import RetrieveModelMixin

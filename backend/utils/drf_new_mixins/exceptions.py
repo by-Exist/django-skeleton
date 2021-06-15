@@ -1,0 +1,2 @@
+class PaginatorNotFound(Exception):
+    pass
