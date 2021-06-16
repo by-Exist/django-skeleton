@@ -1,6 +1,7 @@
 from rest_framework import mixins as rest_mixins
 from rest_framework.response import Response
 from .exceptions import PaginatorNotFound
+from .serializers import ValidateOnlySerializerMixin
 
 
 # 부작용, 멱등성
@@ -23,6 +24,18 @@ from .exceptions import PaginatorNotFound
 # Delete        DELETE + resource   X                       X
 
 
+# PUT과 PATCH의 차이에 대한 이해
+# =============================================================================
+# PUT
+#   - url을 통해 생성될 자원의 식별자를 클라이언트가 지정할 수 있다
+#   - 해당 위치에 이미 자원이 없다면 생성, 있다면 교체한다
+#   - "???"
+# PATCH
+#   - url의 위치에 리소스가 이미 존재한다는 걸 가정한다
+#   - 해당 위치에 있는 자원을 수정한다
+#   - "modify"
+
+
 # Util Mixins
 # =============================================================================
 class RequiredPaginationMixin:
@@ -33,20 +46,53 @@ class RequiredPaginationMixin:
         return self.paginator.paginate_queryset(queryset, self.request, view=self)
 
 
-# Custom Mixins
+class ValidateOnlyViewSetMixin:
+    validate_only_param = "validate_only"
+    validate_only_actions = []
+    allow_validate_only_http_methods = ["POST", "PUT", "PATCH"]
+
+    def initialize_request(self, request, *args, **kwargs):
+        # validate only 기능의 활성화 여부를 request.validate_only에 기록한다.
+        request = super().initialize_request(request, *args, **kwargs)
+        if (
+            self.action in self.validate_only_actions
+            and request.method in self.allow_validate_only_http_methods
+            and request.query_params.get("validate_only", None) == "1"
+        ):
+            request.validate_only = True
+        else:
+            request.validate_only = False
+        return request
+
+    def get_serializer_class(self):
+        # validate_only 기능이 활성화 되었을 때 사용되는 시리얼라이저가
+        # ValidateOnlySerializerMixin을 상속해야 함을 명시한다.
+        serializer_class = super().get_serializer_class()
+        if self.request.validate_only and not issubclass(
+            serializer_class, ValidateOnlySerializerMixin
+        ):
+            msg = (
+                "validate only 기능을 활용하기 위해서는 {}가"
+                "ValidateOnlySerializerMixin을 상속해야 합니다."
+            ).format(serializer_class.__name__)
+            raise AssertionError(msg)
+        return serializer_class
+
+
+# Mixins
 # =============================================================================
-# List = GET + collection uri
+# List = GET + collection
 class ListModelMixin(RequiredPaginationMixin, rest_mixins.ListModelMixin):
     pass
 
 
-# Retrieve = GET + resource uri
+# Retrieve = GET + resource
 from rest_framework.mixins import RetrieveModelMixin
 
-# Create = POST + collection uri
+# Create = POST + collection
 from rest_framework.mixins import CreateModelMixin
 
-# Replace = PUT + resource uri
+# Replace = PUT + resource (may not be)
 class ReplaceModelMixin:
     def replace(self, request, *args, **kwargs):
         partial = False
@@ -62,7 +108,10 @@ class ReplaceModelMixin:
         serializer.save()
 
 
-# Modify = PATCH + resource uri
+# TODO: ReplaceOrCreateModelMixin 정의
+
+
+# Modify = PATCH + resource
 class ModifyModelMixin:
     def modify(self, request, *args, **kwargs):
         partial = True
@@ -78,5 +127,5 @@ class ModifyModelMixin:
         serializer.save()
 
 
-# Destroy = DELETE + resource uri
+# Destroy = DELETE + resource
 from rest_framework.mixins import DestroyModelMixin
