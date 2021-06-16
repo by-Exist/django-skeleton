@@ -1,4 +1,3 @@
-from rest_framework.decorators import MethodMapper, pretty_name
 from rest_framework.decorators import action as rest_action
 
 

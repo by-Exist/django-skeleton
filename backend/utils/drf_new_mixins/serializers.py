@@ -27,7 +27,7 @@ class ValidateOnlySerializerMixin(Serializer):
                     "설정하지 않고 싶다면 자신의 exception_handler에"
                     "drf_validate_only.exceptionsPerformValidateOnly의"
                     "처리 로직을 포함시키거나 뷰에서 request.validate_only 값을"
-                    "활용하여 직접 200 Response를 반환해야 합니다."
+                    "활용하여 직접 204 Response를 반환해야 합니다."
                 )
                 raise PerformValidateOnly(msg)
             else:

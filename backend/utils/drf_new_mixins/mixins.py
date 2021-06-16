@@ -15,25 +15,17 @@ from .serializers import ValidateOnlySerializerMixin
 
 # 표준 메서드
 # =============================================================================
-#               HTTP Mapping        HTTP request body       HTTP response body
-# List          GET + collection    X                       resource list
-# Retrieve      GET + resource      X                       resource
-# Create        POST + collection   resource data           resource
-# Replace       PUT + resource      resource data           resource
-# Modify        PATCH + resource    resource partial data   resource
-# Delete        DELETE + resource   X                       X
-
-
-# PUT과 PATCH의 차이에 대한 이해
-# =============================================================================
-# PUT
-#   - url을 통해 생성될 자원의 식별자를 클라이언트가 지정할 수 있다
-#   - 해당 위치에 이미 자원이 없다면 생성, 있다면 교체한다
-#   - "???"
-# PATCH
-#   - url의 위치에 리소스가 이미 존재한다는 걸 가정한다
-#   - 해당 위치에 있는 자원을 수정한다
-#   - "modify"
+#                   HTTP Mapping        HTTP request body       HTTP response body
+# List              GET + collection    X                       resource list
+# Retrieve          GET + resource      X                       resource
+# Create            POST + collection   resource data           resource
+# Update            PUT + resource      resource data           resource
+# Upsert            PUT + resource      resource data           resource
+# Partial Update    PATCH + resource    resource partial data   resource
+# Delete            DELETE + resource   X                       X
+#
+# Update, 기존 자원이 있어야만 하는 경우
+# Upsert, 기존 자원이 없을 때 생성까지 해주는 경우
 
 
 # Util Mixins
@@ -57,7 +49,7 @@ class ValidateOnlyViewSetMixin:
         if (
             self.action in self.validate_only_actions
             and request.method in self.allow_validate_only_http_methods
-            and request.query_params.get("validate_only", None) == "1"
+            and request.query_params.get("validate_only", None) == "true"
         ):
             request.validate_only = True
         else:
@@ -86,44 +78,60 @@ class ListModelMixin(RequiredPaginationMixin, rest_mixins.ListModelMixin):
     pass
 
 
-# Retrieve = GET + resource
-from rest_framework.mixins import RetrieveModelMixin
-
 # Create = POST + collection
 from rest_framework.mixins import CreateModelMixin
 
-# Replace = PUT + resource (may not be)
-class ReplaceModelMixin:
-    def replace(self, request, *args, **kwargs):
+
+# Retrieve = GET + resource
+from rest_framework.mixins import RetrieveModelMixin
+
+
+# Update = PUT + resource (required)
+class UpdateModelMixin:
+    def update(self, request, *args, **kwargs):
         partial = False
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_replace(serializer)
+        self.perform_update(serializer)
         if getattr(instance, "_prefetched_objects_cache", None):
             instance._prefetched_objects_cache = {}
         return Response(serializer.data)
 
-    def perform_replace(self, serializer):
+    def perform_update(self, serializer):
         serializer.save()
 
 
-# TODO: ReplaceOrCreateModelMixin 정의
+# TODO: Upsert 구현, 메서드 이름은 유지해야 한다!
+# # Upsert = PUT + resource (may not be)
+# class UpsertModelMixin:
+#     def update(self, request, *args, **kwargs):
+#         partial = False
+#         instance = self.get_object()
+#         serializer = self.get_serializer(instance, data=request.data, partial=partial)
+#         serializer.is_valid(raise_exception=True)
+#         self.perform_update(serializer)
+#         if getattr(instance, "_prefetched_objects_cache", None):
+#             instance._prefetched_objects_cache = {}
+#         return Response(serializer.data)
+
+#     def perform_update(self, serializer):
+#         serializer.save()
 
 
-# Modify = PATCH + resource
-class ModifyModelMixin:
-    def modify(self, request, *args, **kwargs):
+# Partial Update = PATCH + resource
+class PartialUpdateModelMixin:
+    def partial_update(self, request, *args, **kwargs):
         partial = True
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
-        self.perform_modify(serializer)
+        self.perform_partial_update(serializer)
         if getattr(instance, "_prefetched_objects_cache", None):
             instance._prefetched_objects_cache = {}
         return Response(serializer.data)
 
-    def perform_modify(self, serializer):
+    def perform_partial_update(self, serializer):
         serializer.save()
 
 

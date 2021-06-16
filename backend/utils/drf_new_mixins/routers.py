@@ -40,8 +40,8 @@ routes = [
         url=r"^{prefix}/{lookup}{trailing_slash}$",
         mapping={
             "get": "retrieve",
-            "put": "replace",
-            "patch": "modify",
+            "put": "update",
+            "patch": "partial_update",
             "delete": "destroy",
         },
         name="{basename}-detail",
@@ -59,7 +59,7 @@ routes = [
 nested_singleton_routes = [
     rest_routers.Route(
         url=r"^{prefix}{trailing_slash}$",
-        mapping={"get": "retrieve", "put": "replace", "patch": "modify"},
+        mapping={"get": "retrieve", "put": "update", "patch": "partial_update"},
         name="{basename}-detail",
         detail=True,
         initkwargs={"suffix": "Instance"},
@@ -90,8 +90,8 @@ custom_routes = [
         url=r"^{prefix}/{lookup}{trailing_slash}$",
         mapping={
             "get": "retrieve",
-            "put": "replace",
-            "patch": "modify",
+            "put": "update",
+            "patch": "partial_update",
             "delete": "destroy",
         },
         name="{basename}-detail",
@@ -109,7 +109,7 @@ custom_routes = [
 custom_nested_singleton_routes = [
     rest_routers.Route(
         url=r"^{prefix}{trailing_slash}$",
-        mapping={"get": "retrieve", "put": "replace", "patch": "modify"},
+        mapping={"get": "retrieve", "put": "update", "patch": "partial_update"},
         name="{basename}-detail",
         detail=True,
         initkwargs={"suffix": "Instance"},

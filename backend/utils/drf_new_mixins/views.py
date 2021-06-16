@@ -29,6 +29,6 @@ def exception_handler(exc, context):
 
     # success validate only, return 200 response
     if isinstance(exc, PerformValidateOnly):
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     return None

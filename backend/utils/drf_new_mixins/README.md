@@ -6,9 +6,11 @@
 
 ## 구현 방식
 
-### mixins.ReplaceModelMixin
+### mixins.UpdateModelMixin
 
-### mixins.ModifyModelMixin
+### mixins.UpsertModelMixin
+
+### mixins.PartialUpdateModelMixin
 
 ### routers.custom_method_routes
 
