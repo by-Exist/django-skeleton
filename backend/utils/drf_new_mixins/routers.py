@@ -1,13 +1,14 @@
 from rest_framework import routers as rest_routers
-from rest_framework_nested.routers import NestedMixin
 
 
 # Mixins
 # =============================================================================
-class CustomMethodRouterMixin:
+from rest_framework_nested.routers import NestedMixin
+
+
+class CustomMethodSimpleRouterMixin:
     def get_lookup_regex(self, viewset, lookup_prefix=""):
-        # custom method가 적용된 경우 lookup_value_regex를 변경
-        # "[^/.]" => "[^/.:]"
+        # lookup_value_regex를 [^/.]에서 [^/.:]로 변경
         base_regex = "(?P<{lookup_prefix}{lookup_url_kwarg}>{lookup_value})"
         lookup_field = getattr(viewset, "lookup_field", "pk")
         lookup_url_kwarg = getattr(viewset, "lookup_url_kwarg", None) or lookup_field
@@ -149,33 +150,33 @@ class NestedSingletonDefaultRouter(NestedMixin, rest_routers.DefaultRouter):
     routes = nested_singleton_routes
 
 
-class CustomSimpleRouter(CustomMethodRouterMixin, rest_routers.SimpleRouter):
+class CustomSimpleRouter(CustomMethodSimpleRouterMixin, rest_routers.SimpleRouter):
     routes = custom_routes
 
 
-class CustomDefaultRouter(CustomMethodRouterMixin, rest_routers.DefaultRouter):
+class CustomDefaultRouter(CustomMethodSimpleRouterMixin, rest_routers.DefaultRouter):
     routes = custom_routes
 
 
 class CustomNestedSimpleRouter(
-    CustomMethodRouterMixin, NestedMixin, rest_routers.SimpleRouter
+    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.SimpleRouter
 ):
     routes = custom_routes
 
 
 class CustomNestedDefaultRouter(
-    CustomMethodRouterMixin, NestedMixin, rest_routers.DefaultRouter
+    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.DefaultRouter
 ):
     routes = custom_routes
 
 
 class CustomNestedSingletonSimpleRouter(
-    CustomMethodRouterMixin, NestedMixin, rest_routers.SimpleRouter,
+    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.SimpleRouter,
 ):
     routes = custom_nested_singleton_routes
 
 
 class CustomNestedSingletonDefaultRouter(
-    CustomMethodRouterMixin, NestedMixin, rest_routers.DefaultRouter,
+    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.DefaultRouter,
 ):
     routes = custom_nested_singleton_routes

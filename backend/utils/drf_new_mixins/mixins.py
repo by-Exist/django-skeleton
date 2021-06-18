@@ -1,7 +1,4 @@
-from rest_framework import mixins as rest_mixins
 from rest_framework.response import Response
-from .exceptions import PaginatorNotFound
-from .serializers import ValidateOnlySerializerMixin
 
 
 # 부작용, 멱등성
@@ -28,54 +25,30 @@ from .serializers import ValidateOnlySerializerMixin
 # Upsert, 기존 자원이 없을 때 생성까지 해주는 경우
 
 
-# Util Mixins
-# =============================================================================
-class RequiredPaginationMixin:
-    def paginate_queryset(self, queryset):
-        if self.paginator is None:
-            msg = "paginator를 찾을 수 없습니다. pagination_class가 지정되었는지 확인하세요."
-            raise PaginatorNotFound(msg)
-        return self.paginator.paginate_queryset(queryset, self.request, view=self)
-
-
-class ValidateOnlyViewSetMixin:
-    validate_only_param = "validate_only"
-    validate_only_actions = []
-    allow_validate_only_http_methods = ["POST", "PUT", "PATCH"]
-
-    def initialize_request(self, request, *args, **kwargs):
-        # validate only 기능의 활성화 여부를 request.validate_only에 기록한다.
-        request = super().initialize_request(request, *args, **kwargs)
-        if (
-            self.action in self.validate_only_actions
-            and request.method in self.allow_validate_only_http_methods
-            and request.query_params.get("validate_only", None) == "true"
-        ):
-            request.validate_only = True
-        else:
-            request.validate_only = False
-        return request
-
-    def get_serializer_class(self):
-        # validate_only 기능이 활성화 되었을 때 사용되는 시리얼라이저가
-        # ValidateOnlySerializerMixin을 상속해야 함을 명시한다.
-        serializer_class = super().get_serializer_class()
-        if self.request.validate_only and not issubclass(
-            serializer_class, ValidateOnlySerializerMixin
-        ):
-            msg = (
-                "validate only 기능을 활용하기 위해서는 {}가"
-                "ValidateOnlySerializerMixin을 상속해야 합니다."
-            ).format(serializer_class.__name__)
-            raise AssertionError(msg)
-        return serializer_class
-
-
 # Mixins
 # =============================================================================
 # List = GET + collection
-class ListModelMixin(RequiredPaginationMixin, rest_mixins.ListModelMixin):
-    pass
+class ListModelMixin:
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        page = self.paginate_queryset(queryset)
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
+
+    def paginate_queryset(self, queryset):
+        if self.paginator is None:
+            msg = "pagination_class가 지정되지 않았습니다."
+            raise Exception(msg)
+        paginate_queryset = self.paginator.paginate_queryset(
+            queryset, self.request, view=self
+        )
+        if not paginate_queryset:
+            msg = (
+                "paginator.paginate_queryset 메서드의 호출 결과가 None입니다."
+                "pagination_class의 page_size, limit 등이 지정되었는지 확인해주세요."
+            )
+            raise Exception(msg)
+        return paginate_queryset
 
 
 # Create = POST + collection
@@ -102,7 +75,7 @@ class UpdateModelMixin:
         serializer.save()
 
 
-# TODO: Upsert 구현, 메서드 이름은 유지해야 한다!
+# TODO: Upsert 구현, 메서드 이름은 유지
 # # Upsert = PUT + resource (may not be)
 # class UpsertModelMixin:
 #     def update(self, request, *args, **kwargs):

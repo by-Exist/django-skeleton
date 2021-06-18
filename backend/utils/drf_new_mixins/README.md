@@ -6,14 +6,4 @@
 
 ## 구현 방식
 
-### mixins.UpdateModelMixin
-
-### mixins.UpsertModelMixin
-
-### mixins.PartialUpdateModelMixin
-
-### routers.custom_method_routes
-
-### routers.SimpleRouter
-
-### routers.DefaultRouter
+### ...

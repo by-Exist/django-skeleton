@@ -1,8 +1,7 @@
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
-from rest_framework import exceptions, status
+from rest_framework import exceptions, views as rest_views, status
 from rest_framework.response import Response
-from rest_framework.views import set_rollback
 from .exceptions import PerformValidateOnly
 
 
@@ -24,10 +23,11 @@ def exception_handler(exc, context):
             data = exc.detail
         else:
             data = {"detail": exc.detail}
-        set_rollback()
+        rest_views.set_rollback()
         return Response(data, status=exc.status_code, headers=headers)
 
-    # success validate only, return 200 response
+    # is_valid 시 raise_exception이 True라서 PerformValidateOnly이 발생한 경우
+    # return Response(status=status.HTTP_204_NO_CONTENT)
     if isinstance(exc, PerformValidateOnly):
         return Response(status=status.HTTP_204_NO_CONTENT)
 

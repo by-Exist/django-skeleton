@@ -1,9 +1,4 @@
-# Mixin Exceptions
-class PaginatorNotFound(Exception):
-    pass
-
-
-# Validate Only Exceptions
+# use validate only
 class PerformValidateOnly(Exception):
     pass
 
