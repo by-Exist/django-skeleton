@@ -24,6 +24,7 @@ from rest_framework.response import Response
 # Update, 기존 자원이 있어야만 하는 경우
 # Upsert, 기존 자원이 없을 때 생성까지 해주는 경우
 
+from rest_framework.generics import GenericAPIView
 
 # Mixins
 # =============================================================================
@@ -42,12 +43,6 @@ class ListModelMixin:
         paginate_queryset = self.paginator.paginate_queryset(
             queryset, self.request, view=self
         )
-        if not paginate_queryset:
-            msg = (
-                "paginator.paginate_queryset 메서드의 호출 결과가 None입니다."
-                "pagination_class의 page_size, limit 등이 지정되었는지 확인해주세요."
-            )
-            raise Exception(msg)
         return paginate_queryset
 
 
