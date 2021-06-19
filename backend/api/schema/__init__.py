@@ -1,2 +1,1 @@
-__all__ = ["exampleapp"]
-
+from .example import *
