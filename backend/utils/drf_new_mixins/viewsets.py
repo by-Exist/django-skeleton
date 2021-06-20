@@ -2,7 +2,7 @@ from rest_framework import viewsets as rest_viewsets
 from .serializers import ValidateOnlySerializerMixin
 
 
-class ValidateOnlyGenericViewSetMixin(rest_viewsets.GenericViewSet):
+class ValidateOnlyGenericViewSetMixin:
 
     validate_only_param = "validate_only"
     validate_only_actions = []

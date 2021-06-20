@@ -24,7 +24,6 @@ from rest_framework.response import Response
 # Update, 기존 자원이 있어야만 하는 경우
 # Upsert, 기존 자원이 없을 때 생성까지 해주는 경우
 
-from rest_framework.generics import GenericAPIView
 
 # Mixins
 # =============================================================================
