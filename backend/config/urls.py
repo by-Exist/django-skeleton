@@ -6,25 +6,25 @@ from drf_spectacular.views import (
     SpectacularRedocView,
     SpectacularSwaggerView,
 )
-from api.urls import API_VERSION, urlpatterns as api_urls
+from api.urls import urlpatterns as api_urls
 
 
 # Common urls
 # =============================================================================
 urlpatterns = [
-    path(f"<version:version>/", include(api_urls)),
+    path(f"{settings.API_VERSION}/", include(api_urls)),
     path(
-        "<version:version>/schema/",
-        SpectacularAPIView.as_view(api_version=API_VERSION),
+        f"{settings.API_VERSION}/schema/",
+        SpectacularAPIView.as_view(api_version=settings.API_VERSION),
         name="schema",
     ),
     path(
-        "<version:version>/schema/swagger/",
+        f"{settings.API_VERSION}/schema/swagger/",
         SpectacularSwaggerView.as_view(url_name="schema"),
         name="swagger",
     ),
     path(
-        "<version:version>/schema/redoc/",
+        f"{settings.API_VERSION}/schema/redoc/",
         SpectacularRedocView.as_view(url_name="schema"),
         name="redoc",
     ),

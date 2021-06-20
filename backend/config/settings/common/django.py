@@ -16,6 +16,12 @@ WSGI_APPLICATION = "config.wsgi.application"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
+# API
+# =============================================================================
+API_VERSION = env.str("DJANGO_API_VERSION")  # urls
+API_SERVICE_NAME = "//example.domain.com"  # models.Model.full_resource_name
+
+
 # Installed Apps
 # =============================================================================
 INSTALLED_APPS = [

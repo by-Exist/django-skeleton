@@ -30,6 +30,7 @@ services:
     environment:
       - DEBUG
       - DJANGO_SECRET_KEY
+      - DJANGO_API_VERSION
       - DJANGO_ALLOWED_HOSTS
       - DJANGO_DEFAULT_DATABASE_URL
       - DJANGO_STORAGE_ACCESS_KEY_ID
