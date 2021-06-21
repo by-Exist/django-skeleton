@@ -6,8 +6,8 @@ from .django import *
 # https://www.django-rest-framework.org/api-guide/settings/
 INSTALLED_APPS += ["rest_framework"]
 REST_FRAMEWORK = {}
-REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"] = ["rest_framework.filters.OrderingFilter"]
-REST_FRAMEWORK["EXCEPTION_HANDLER"] = "utils.drf_new_mixins.views.exception_handler"
+REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"] = []
+REST_FRAMEWORK["EXCEPTION_HANDLER"] = "utils.drf_custom.views.exception_handler"
 
 
 # Django Filter

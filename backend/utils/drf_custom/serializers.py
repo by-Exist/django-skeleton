@@ -1,3 +1,4 @@
+from rest_framework import serializers as rest_serializers
 from rest_framework.fields import empty
 from .exceptions import PerformValidateOnly, BlockedSideEffect
 
@@ -47,3 +48,11 @@ class ValidateOnlySerializerMixin:
         if self._blocked_side_effect:
             raise BlockedSideEffect("validate only 기능이 활성화되어 해당 동작을 수행할 수 없습니다.")
         return super().update(instance, validated_data)
+
+
+class Serializer(ValidateOnlySerializerMixin, rest_serializers.Serializer):
+    pass
+
+
+class ModelSerializer(ValidateOnlySerializerMixin, rest_serializers.ModelSerializer):
+    pass

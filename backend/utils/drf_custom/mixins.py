@@ -1,4 +1,7 @@
+from django.http import Http404
+from rest_framework import status
 from rest_framework.response import Response
+from rest_framework.request import clone_request
 
 
 # 부작용, 멱등성
@@ -69,21 +72,33 @@ class UpdateModelMixin:
         serializer.save()
 
 
-# TODO: Upsert 구현, 메서드 이름은 유지
-# # Upsert = PUT + resource (may not be)
-# class UpsertModelMixin:
-#     def update(self, request, *args, **kwargs):
-#         partial = False
-#         instance = self.get_object()
-#         serializer = self.get_serializer(instance, data=request.data, partial=partial)
-#         serializer.is_valid(raise_exception=True)
-#         self.perform_update(serializer)
-#         if getattr(instance, "_prefetched_objects_cache", None):
-#             instance._prefetched_objects_cache = {}
-#         return Response(serializer.data)
+# Upsert = PUT + resource (may not be)
+# 사용자가 리소스의 pk를 결정할 수 있는 환경이라면 사용한다.
+class UpsertModelMixin:
+    def update(self, request, *args, **kwargs):
+        partial = False
+        instance = self.get_object_or_none()
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        serializer.is_valid(raise_exception=True)
+        if instance is None:
+            assert getattr(
+                self, "perform_create", None
+            ), "UpsertModelMixin의 생성 동작은 CreateModelMixin을 필요로 합니다."
+            self.perform_create(serializer)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        self.perform_update(serializer)
+        if getattr(instance, "_prefetched_objects_cache", None):
+            instance._prefetched_objects_cache = {}
+        return Response(serializer.data)
 
-#     def perform_update(self, serializer):
-#         serializer.save()
+    def perform_update(self, serializer):
+        serializer.save()
+
+    def get_object_or_none(self):
+        try:
+            return self.get_object()
+        except Http404:
+            self.check_permissions(clone_request(self.request, "POST"))
 
 
 # Partial Update = PATCH + resource
