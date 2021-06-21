@@ -2,4 +2,5 @@
 
 # Django
 django-debug-toolbar==3.2.1
+django-extensions
 psycopg2-binary
