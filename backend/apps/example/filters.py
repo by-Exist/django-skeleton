@@ -16,8 +16,6 @@ class CollectionFilter(FilterSet):
         field_name="title", lookup_expr="icontains", label="titleContains"
     )
 
-    id = NumberRangeFilter(field_name="id", lookup_expr="range")
-
     class Meta:
         model = Collection
-        fields = ["title", "title__contains", "id"]
+        fields = ["title", "title__contains"]
