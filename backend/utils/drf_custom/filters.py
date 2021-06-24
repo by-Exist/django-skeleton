@@ -96,6 +96,15 @@ class OrderingFilterBackend(rest_filters.BaseFilterBackend):
         assert (
             coreschema is not None
         ), "coreschema must be installed to use `get_schema_fields()`"
+        useable_values = ", ".join(
+            [
+                *[f'"{field}"' for field in view.ordering_fields],
+                *[f'"{field} desc"' for field in view.ordering_fields],
+            ]
+        )
+        ordering_description = "{}\n\n사용 가능한 값들 = [{}]".format(
+            self.ordering_description, useable_values
+        )
         return [
             coreapi.Field(
                 name=getattr(view, "ordering_param", self.ordering_param),
@@ -103,7 +112,7 @@ class OrderingFilterBackend(rest_filters.BaseFilterBackend):
                 location="query",
                 schema=coreschema.String(
                     title=force_str(self.ordering_title),
-                    description=force_str(self.ordering_description),
+                    description=force_str(ordering_description),
                 ),
             )
         ]
@@ -111,12 +120,22 @@ class OrderingFilterBackend(rest_filters.BaseFilterBackend):
     def get_schema_operation_parameters(self, view):
         if not getattr(view, "ordering_fields", None):
             return []
+
+        useable_values = ", ".join(
+            [
+                *[f'"{field}"' for field in view.ordering_fields],
+                *[f'"{field} desc"' for field in view.ordering_fields],
+            ]
+        )
+        ordering_description = "{}\n\n사용 가능한 값들 = [{}]".format(
+            self.ordering_description, useable_values
+        )
         return [
             {
                 "name": getattr(view, "ordering_param", self.ordering_param),
                 "required": False,
                 "in": "query",
-                "description": force_str(self.ordering_description),
+                "description": force_str(ordering_description),
                 "schema": {"type": "string",},
             },
         ]
@@ -140,7 +159,7 @@ class BatchGetFilterBackend(rest_filters.BaseFilterBackend):
     batch_get_param = "valueList"
     batch_get_limit = 200
     batch_get_description = (
-        "콤마로 구분된 값들을 활용하여 리소스들을 일괄적으로 가져옵니다."
+        "콤마(,)로 구분된 값들을 활용하여 리소스들을 일괄적으로 가져옵니다.\n\n"
         "가져올 수 없는 값(올바르지 않은 값, 존재하지 않는 리소스)들은 무시됩니다."
     )
 
