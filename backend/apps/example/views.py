@@ -5,8 +5,8 @@ from utils.drf_custom.viewsets import GenericViewSet
 from utils.drf_custom.filters import (
     OrderingFilterBackend,
     BatchGetFilterBackend,
-    DjangoFilterBackend,
 )
+from utils.drf_custom.filterset import DjangoFilterBackend
 from utils.drf_custom.pagination import SmallPageNumberPagination
 from .models import Collection, NestedCollection, NestedResource
 from .serializers import (
@@ -30,18 +30,24 @@ class CollectionViewSet(
     queryset = Collection.objects.all()
     serializer_class = CollectionSerializer
 
-    filter_backends_map = {
-        "list": [OrderingFilterBackend],
-        "batch_get": [OrderingFilterBackend, BatchGetFilterBackend],
-        "search": [OrderingFilterBackend, DjangoFilterBackend],
-    }
+    validate_only_actions = ["create", "partial_update"]
+
+    @property
+    def filter_backends(self):
+        map = {
+            "list": [OrderingFilterBackend],
+            "batch_get": [OrderingFilterBackend, BatchGetFilterBackend],
+            "search": [OrderingFilterBackend, DjangoFilterBackend],
+        }
+        if self.action in map:
+            return map[self.action]
+        return []
+
     ordering_fields = ["id", "title"]
     batch_get_value_regex = "^[0-9]+$"
     filterset_class = CollectionFilter
 
     pagination_class = SmallPageNumberPagination
-
-    validate_only_actions = ["create", "partial_update"]
 
     # Actions
     @action(
@@ -55,12 +61,6 @@ class CollectionViewSet(
     )
     def search(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
-
-    # Overwrite Methods
-    def filter_queryset(self, queryset):
-        for backend in self.filter_backends_map[self.action]:
-            queryset = backend().filter_queryset(self.request, queryset, self)
-        return queryset
 
     def perform_create(self, serializer):
         obj = serializer.save()
