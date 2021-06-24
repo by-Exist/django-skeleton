@@ -23,7 +23,7 @@ REST_FRAMEWORK["DEFAULT_FILTER_BACKENDS"] += [
 # =============================================================================
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
 INSTALLED_APPS += ["drf_spectacular"]
-REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "drf_spectacular.openapi.AutoSchema"
+REST_FRAMEWORK["DEFAULT_SCHEMA_CLASS"] = "utils.drf_custom.openapi.CustomAutoSchema"
 SPECTACULAR_SETTINGS = {}
 SPECTACULAR_SETTINGS["SWAGGER_UI_SETTINGS"] = {}
 SPECTACULAR_SETTINGS["SCHEMA_PATH_PREFIX"] = "/v[0-9]+/"
