@@ -16,14 +16,14 @@ class NestedCollectionSerializer(serializers.ModelSerializer):
         read_only_fields = ["parent"]
 
     def validate(self, attrs):
-        collection_pk = self.context["view"].kwargs["collection_pk"]
+        collection_pk: str = self.context["view"].kwargs["collection_pk"]
         collection = get_object_or_404(Collection, pk=collection_pk)
         if NestedCollection.objects.filter(
             parent=collection, title=attrs["title"]
         ).exists():
             raise serializers.ValidationError(
                 detail={
-                    "title": "collection 내에 이미 해당 title의 nested collection 리소스가 존재합니다."
+                    "title": "collection에 이미 해당 title의 nested collection 리소스가 존재합니다."
                 }
             )
         return attrs

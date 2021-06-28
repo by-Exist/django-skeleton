@@ -11,9 +11,11 @@ class NumberRangeFilter(filters.BaseRangeFilter, filters.NumberFilter):
 
 class CollectionFilter(FilterSet):
 
-    title = filters.CharFilter()
+    title = filters.CharFilter(help_text="title과 일치하는 Collection을 조회합니다.")
     title__contains = filters.CharFilter(
-        field_name="title", lookup_expr="icontains", label="titleContains"
+        field_name="title",
+        lookup_expr="icontains",
+        help_text="title 내에 문자열이 포함된 Collection을 조회합니다.",
     )
 
     class Meta:
