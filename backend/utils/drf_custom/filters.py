@@ -159,8 +159,8 @@ class BatchGetFilterBackend(rest_filters.BaseFilterBackend):
     batch_get_param = "valueList"
     batch_get_limit = 200
     batch_get_description = (
-        "콤마(,)로 구분된 값들을 활용하여 리소스들을 일괄적으로 가져옵니다.\n\n"
-        "가져올 수 없는 값(올바르지 않은 값, 존재하지 않는 리소스)들은 무시됩니다."
+        "콤마(,)로 구분된 식별자들을 활용하여 리소스들을 일괄적으로 가져옵니다.\n\n"
+        "가져올 수 없는 경우(올바르지 않은 식별자, 존재하지 않는 리소스)는 무시됩니다."
     )
 
     def filter_queryset(self, request, queryset, view):
@@ -172,9 +172,10 @@ class BatchGetFilterBackend(rest_filters.BaseFilterBackend):
         batch_get_param = getattr(view, "batch_get_param", self.batch_get_param)
         values = self.get_lookup_values(request, batch_get_param, lookup_value_regex)
         if not values:
-            return queryset
+            raise rest_exceptions.ValidationError(
+                detail={f"{batch_get_param}": f"required query string."},
+            )
         batch_get_limit = getattr(view, "batch_get_limit", self.batch_get_limit)
-        print(len(values))
         if len(values) > batch_get_limit:
             raise rest_exceptions.ValidationError(
                 detail={
@@ -202,9 +203,43 @@ class BatchGetFilterBackend(rest_filters.BaseFilterBackend):
         return [
             {
                 "name": getattr(view, "batch_get_param", self.batch_get_param),
-                "required": False,
+                "required": True,
                 "in": "query",
                 "description": force_str(self.batch_get_description),
                 "schema": {"type": "string",},
             },
         ]
+
+
+class PathVariableFilterBackend(rest_filters.BaseFilterBackend):
+    def filter_queryset(self, request, queryset, view):
+        path_variable_config = getattr(view, "path_variable_config", None)
+        if not path_variable_config:
+            return queryset
+        for lookup_url_kwarg, options in path_variable_config.items():
+            field = options["field"]
+            lookup_value = view.kwargs[lookup_url_kwarg]
+            if lookup_value == "-":
+                continue
+            queryset = queryset.filter(**{field: lookup_value})
+        return queryset
+
+    def get_schema_fields(self, view):
+        return super().get_schema_fields(view)
+
+    def get_schema_operation_parameters(self, view):
+        wildcard_description = "와일드카드(-) 문법이 허용됩니다."
+        result = []
+        for lookup_url_kwarg, options in view.path_variable_config.items():
+            allow_wildcard_actions = options["allow_wildcard_actions"]
+            path_param = {
+                "name": lookup_url_kwarg,
+                "required": True,
+                "in": "path",
+                "description": ""
+                if view.action not in allow_wildcard_actions
+                else wildcard_description,
+                "schema": {"type": "string",},
+            }
+            result.append(path_param)
+        return result
