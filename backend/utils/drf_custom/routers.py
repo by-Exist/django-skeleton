@@ -1,4 +1,4 @@
-from rest_framework import routers as rest_routers
+from rest_framework.routers import Route, DynamicRoute
 
 
 # Mixins
@@ -6,7 +6,7 @@ from rest_framework import routers as rest_routers
 from rest_framework_nested.routers import NestedMixin
 
 
-class CustomMethodSimpleRouterMixin:
+class CustomMethodMixin:
     def get_lookup_regex(self, viewset, lookup_prefix=""):
         # lookup_value_regex를 [^/.]에서 [^/.:]로 변경
         base_regex = "(?P<{lookup_prefix}{lookup_url_kwarg}>{lookup_value})"
@@ -23,49 +23,15 @@ class CustomMethodSimpleRouterMixin:
 
 # Routes
 # =============================================================================
-routes = [
-    rest_routers.Route(
-        url=r"^{prefix}{trailing_slash}$",
-        mapping={"get": "list", "post": "create"},
-        name="{basename}-list",
-        detail=False,
-        initkwargs={"suffix": "List"},
-    ),
-    rest_routers.DynamicRoute(
-        url=r"^{prefix}/{url_path}{trailing_slash}$",
-        name="{basename}-{url_name}",
-        detail=False,
-        initkwargs={},
-    ),
-    rest_routers.Route(
-        url=r"^{prefix}/{lookup}{trailing_slash}$",
-        mapping={
-            "get": "retrieve",
-            "put": "update",
-            "patch": "partial_update",
-            "delete": "destroy",
-        },
-        name="{basename}-detail",
-        detail=True,
-        initkwargs={"suffix": "Instance"},
-    ),
-    rest_routers.DynamicRoute(
-        url=r"^{prefix}/{lookup}/{url_path}{trailing_slash}$",
-        name="{basename}-{url_name}",
-        detail=True,
-        initkwargs={},
-    ),
-]
-
 nested_singleton_routes = [
-    rest_routers.Route(
+    Route(
         url=r"^{prefix}{trailing_slash}$",
         mapping={"get": "retrieve", "put": "update", "patch": "partial_update"},
         name="{basename}-detail",
         detail=True,
         initkwargs={"suffix": "Instance"},
     ),
-    rest_routers.DynamicRoute(
+    DynamicRoute(
         url=r"^{prefix}/{url_path}{trailing_slash}$",
         name="{basename}-{url_name}",
         detail=True,
@@ -74,20 +40,20 @@ nested_singleton_routes = [
 ]
 
 custom_routes = [
-    rest_routers.Route(
+    Route(
         url=r"^{prefix}{trailing_slash}$",
         mapping={"get": "list", "post": "create"},
         name="{basename}-list",
         detail=False,
         initkwargs={"suffix": "List"},
     ),
-    rest_routers.DynamicRoute(
+    DynamicRoute(
         url=r"^{prefix}:{url_path}{trailing_slash}$",
         name="{basename}-{url_name}",
         detail=False,
         initkwargs={},
     ),
-    rest_routers.Route(
+    Route(
         url=r"^{prefix}/{lookup}{trailing_slash}$",
         mapping={
             "get": "retrieve",
@@ -99,7 +65,7 @@ custom_routes = [
         detail=True,
         initkwargs={"suffix": "Instance"},
     ),
-    rest_routers.DynamicRoute(
+    DynamicRoute(
         url=r"^{prefix}/{lookup}:{url_path}{trailing_slash}$",
         name="{basename}-{url_name}",
         detail=True,
@@ -108,14 +74,14 @@ custom_routes = [
 ]
 
 custom_nested_singleton_routes = [
-    rest_routers.Route(
+    Route(
         url=r"^{prefix}{trailing_slash}$",
         mapping={"get": "retrieve", "put": "update", "patch": "partial_update"},
         name="{basename}-detail",
         detail=True,
         initkwargs={"suffix": "Instance"},
     ),
-    rest_routers.DynamicRoute(
+    DynamicRoute(
         url=r"^{prefix}:{url_path}{trailing_slash}$",
         name="{basename}-{url_name}",
         detail=True,
@@ -126,57 +92,51 @@ custom_nested_singleton_routes = [
 
 # Routers
 # =============================================================================
-class SimpleRouter(rest_routers.SimpleRouter):
-    routes = routes
+from rest_framework.routers import SimpleRouter
 
 
-class DefaultRouter(rest_routers.DefaultRouter):
-    routes = routes
+from rest_framework.routers import DefaultRouter
 
 
-class NestedSimpleRouter(NestedMixin, rest_routers.SimpleRouter):
-    routes = routes
+class NestedSimpleRouter(NestedMixin, SimpleRouter):
+    pass
 
 
-class NestedDefaultRouter(NestedMixin, rest_routers.DefaultRouter):
-    routes = routes
+class NestedDefaultRouter(NestedMixin, DefaultRouter):
+    pass
 
 
-class NestedSingletonSimpleRouter(NestedMixin, rest_routers.SimpleRouter):
+class NestedSingletonSimpleRouter(NestedMixin, SimpleRouter):
     routes = nested_singleton_routes
 
 
-class NestedSingletonDefaultRouter(NestedMixin, rest_routers.DefaultRouter):
+class NestedSingletonDefaultRouter(NestedMixin, DefaultRouter):
     routes = nested_singleton_routes
 
 
-class CustomSimpleRouter(CustomMethodSimpleRouterMixin, rest_routers.SimpleRouter):
+class CustomSimpleRouter(CustomMethodMixin, SimpleRouter):
     routes = custom_routes
 
 
-class CustomDefaultRouter(CustomMethodSimpleRouterMixin, rest_routers.DefaultRouter):
+class CustomDefaultRouter(CustomMethodMixin, DefaultRouter):
     routes = custom_routes
 
 
-class CustomNestedSimpleRouter(
-    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.SimpleRouter
-):
+class CustomNestedSimpleRouter(CustomMethodMixin, NestedMixin, SimpleRouter):
     routes = custom_routes
 
 
-class CustomNestedDefaultRouter(
-    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.DefaultRouter
-):
+class CustomNestedDefaultRouter(CustomMethodMixin, NestedMixin, DefaultRouter):
     routes = custom_routes
 
 
 class CustomNestedSingletonSimpleRouter(
-    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.SimpleRouter,
+    CustomMethodMixin, NestedMixin, SimpleRouter,
 ):
     routes = custom_nested_singleton_routes
 
 
 class CustomNestedSingletonDefaultRouter(
-    CustomMethodSimpleRouterMixin, NestedMixin, rest_routers.DefaultRouter,
+    CustomMethodMixin, NestedMixin, DefaultRouter,
 ):
     routes = custom_nested_singleton_routes
