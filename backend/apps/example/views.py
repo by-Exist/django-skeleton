@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404
+from rest_framework.decorators import action
 from utils.drf_custom import mixins
 from utils.drf_custom.viewsets import GenericViewSet
-from utils.drf_custom.decorators import action
 from utils.drf_custom.filters import (
     OrderingFilterBackend,
     BatchGetFilterBackend,
@@ -51,7 +51,7 @@ class CollectionViewSet(
     pagination_class = SmallPageNumberPagination
 
     # Actions
-    @action(methods=["get"], detail=False)
+    @action(methods=["get"], detail=False, url_path="batchGet")
     def batch_get(self, request, *args, **kwargs):
         return self.list(request, *args, **kwargs)
 
