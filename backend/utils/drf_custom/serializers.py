@@ -23,11 +23,7 @@ class ValidateOnlySerializerMixin:
                 msg = (
                     "rest framework의 exception handler를"
                     "drf_new_mixins.views.exception_handler로 변경할 경우"
-                    "해당 exception은 자동으로 200 Response 처리됩니다."
-                    "설정하지 않고 싶다면 자신의 exception_handler에"
-                    "drf_new_mixins.exceptionsPerformValidateOnly의"
-                    "처리 로직을 포함시키거나 뷰에서 request.validate_only의 값에 따라"
-                    "직접 204 Response를 반환하는 로직을 정의해야 합니다."
+                    "해당 exception은 자동으로 204 Response 처리됩니다."
                 )
                 raise PerformValidateOnly(msg)
             else:
