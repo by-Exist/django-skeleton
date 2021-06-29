@@ -1,14 +1,15 @@
 from django.shortcuts import get_object_or_404
 from utils.drf_custom import mixins
 from utils.drf_custom.viewsets import GenericViewSet
+from utils.drf_custom.decorators import action
 from utils.drf_custom.filters import (
     OrderingFilterBackend,
     BatchGetFilterBackend,
     PathVariableFilterBackend,
 )
-from utils.drf_custom.decorators import action
 from utils.drf_custom.filterset import DjangoFilterBackend
 from utils.drf_custom.pagination import SmallPageNumberPagination
+from .filters import CollectionFilter
 from .models import Collection, NestedCollection, NestedResource
 from .serializers import (
     CollectionSerializer,
@@ -16,7 +17,6 @@ from .serializers import (
     MoveNestedCollectionSerializer,
     NestedResourceSerializer,
 )
-from .filters import CollectionFilter
 
 
 class CollectionViewSet(

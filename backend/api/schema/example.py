@@ -13,31 +13,63 @@ settings.SPECTACULAR_SETTINGS["VERSION"] = "1.0.0"
 settings.SPECTACULAR_SETTINGS[
     "DESCRIPTION"
 ] = """
-## Intro
+## [ 설명 ]
 API 문서를 만들 때 참고 삼을 수 있는 기반 틀을 제공합니다.
 
-해당 문서는 backend.apps.example app과 연동되어 있습니다. 실제 구현 방식은 코드를 살펴보기 바랍니다.
+해당 문서는 backend.apps.example Application과 연동되어 있습니다.
 
-## Validate Only
-해당 기능은 부작용이 있는 작업에 한하여, 유효성 검사만을 진행하고자 할 때 사용됩니다.
+## [ 구현된 기능 ]
 
-쿼리 스트링으로 validate_only=true를 전달받음으로써 수행되며, 유효성 검사에 문제가 없을 경우 status code 204인 빈 Response를 반환합니다.
+### \- Validate Only
+Google Api Guide - [요청 유효성 검사](https://cloud.google.com/apis/design/design_patterns?hl=ko)를 참고하였습니다.
 
-해당 기능을 지원하는 endpoint는 validate_only parameter가 추가됩니다.
+해당 기능은 부작용이 있는 작업에 한하여, 유효성 검사만을 수행하고자 할 때 사용됩니다.
 
-## Group info
+해당 기능을 지원하는 endpoint는 validate_only query parameter를 허용합니다.
+
+쿼리 스트링에 validate_only=true가 전달되면, 유효성 검사에 문제가 없을 경우 204 Response를 반환합니다.
+
+대부분의 create, update 동작에 구현되어 있습니다.
+
+자세한 구현 방식은 ValidateOnlyGenericViewSetMixin을 살펴보기 바랍니다.
+
+### \- Custom Method
+Google Api Guide - [커스텀 메서드](https://cloud.google.com/apis/design/custom_methods?hl=ko)를 참고하였습니다.
+
+[표준 메서드](https://cloud.google.com/apis/design/standard_methods?hl=ko)로 구현하기 적절하지 않은 동작을 구현할 때 사용됩니다.
+
+| Endpoint | Description |
+| --- | --- |
+| collections:batchGet | 리소스 식별자 목록을 활용하여 리소스 일괄 가져오기 |
+| collections:search | 기존 collection get과는 다른 방식으로 리소스 가져오기  |
+| collections/\{collection_pk\}/nested-collections/\{pk\}:move| 리소스의 위치 변경에 사용되는 엔드포인트 |
+
+자세한 구현 방식은 CustomMethodMixin, custom_routes를 살펴보기 바랍니다.
+
+### \- WildCard
+Google Api Guide - [하위 컬렉션](https://cloud.google.com/apis/design/design_patterns?hl=ko)을 참고하였습니다.
+
+종종, 상위 컬렉션의 식별자를 모르더라도 하위 컬렉션의 List, Retrieve를 활용할 수 있도록 와일드 카드 "-"를 사용할 수 있습니다.
+
+ex) GET https://library.googleapis.com/v1/shelves/-/books?filter=xxx
+
+ex) GET https://library.googleapis.com/v1/shelves/-/books/{id}
+
+자세한 구현 방식은 CheckPathVariableViewSetMixin, PathVariableFilterBackend를 살펴보시기 바랍니다.
+
+## [ 모델 정보 ]
 ### collections
-Create, Read, Update, Delete를 지원하는 루트 컬렉션입니다.
+루트에 위치한 컬렉션입니다.
 
-권장되는 형태의 엔드포인트입니다.
+서브 컬렉션으로 nested collection을 지닙니다.
+
+서브 리소스로 nested resource를 지닙니다. 생명 주기를 함께 합니다.
 ### nested collections
-Create, Read, Update, Delete를 지원하며, 상위 리소스에 종속적인 컬렉션입니다.
+parent로 collection을 지니는 nested collection입니다.
 
-중첩의 깊이가 2단계 이상 깊어지지 않도록 하십시오. 자원 간의 관계가 직관적이지 않습니다.
-
-만약 url을 통해 노출하고 싶지 않은 정보가 포함된다면 중첩 관계를 제거한 루트 컬렉션으로 활용하세요.
+중첩의 깊이를 최소한으로 유지하는 것이 좋습니다.
 ### nested resource
-생명 주기가 상위 리소스에 종속적인 리소스입니다.
+생명 주기가 collection에 종속적인 리소스입니다.
 
 Read, Update만을 지원합니다.
 """
@@ -169,6 +201,8 @@ nested_collection_destroy_schema = extend_schema(
 )
 
 nested_collection_move_description = """
+리소스의 이동 작업(url의 변동)은 put이나 patch가 아닌 별도의 엔드포인트로 처리합니다.
+
 해당 리소스를 다른 상위 리소스로 이동합니다.
 """
 nested_collection_move_schema = extend_schema(
