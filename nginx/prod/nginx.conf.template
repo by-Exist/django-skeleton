@@ -45,7 +45,7 @@ http {
     ssl_certificate     /etc/nginx/ssl/${NGINX_DOMAIN}.crt;
     ssl_certificate_key /etc/nginx/ssl/${NGINX_DOMAIN}.key;
 
-    location ~ ^/(api) {
+    location ~ ^/(v[0-9]+) {
       proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
       proxy_set_header  X-Forwarded-Proto $scheme;
       proxy_set_header  Host $http_host;
