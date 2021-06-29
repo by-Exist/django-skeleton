@@ -1,7 +1,10 @@
 # Environment
 
+- 각 환경에서 지켜야 하는 지침
+
+## 파일명 형식
+
 - docker-compose.{Environment}.yml
-- 각 환경에서 지켜야 하는 지침들을 기록한다.
 
 ## Development - dev
 
