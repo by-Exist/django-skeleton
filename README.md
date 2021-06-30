@@ -21,3 +21,15 @@ Root directory
 ㄴ docker-compose : 개발, 테스트, 배포 단계에서 사용될 docker-compose 파일들
 
 ㄴ env : docker-compose에서 활용되는 환경변수 파일들
+
+nginx, backend, frontend는 각자 자신의 Dockerfile을 지닙니다.
+
+## [ Look Up ]
+
+### [Destribution.md](./Destribution.md)
+
+- 배포 시 진행할 일반적인 단계가 기록되어 있습니다.
+
+### [backend/utils/drf_custom/README.md](./backend/utils/drf_custom/README.md)
+
+- drf에 추가적인 기능을 부여하기 위해 만든 유틸 설명서입니다.
