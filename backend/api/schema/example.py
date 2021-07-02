@@ -257,4 +257,3 @@ class FixCollectionViewSet(OpenApiViewExtension):
             partial_update=nested_resource_partial_update_schema,
         )(self.target_class)
         return FixedViewSet
-

@@ -30,4 +30,3 @@ class NestedResource(models.Model):
 
     class Meta:
         ordering = ["-id"]
-
