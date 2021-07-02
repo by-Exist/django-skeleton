@@ -16,14 +16,6 @@ DEBUG_TOOLBAR_CONFIG["SHOW_TOOLBAR_CALLBACK"] = lambda request: True
 INSTALLED_APPS += ["django_extensions"]
 
 
-# Django REST Framework
-# =============================================================================
-# https://www.django-rest-framework.org/api-guide/settings/
-REST_FRAMEWORK[
-    "DEFAULT_VERSIONING_CLASS"
-] = "rest_framework.versioning.URLPathVersioning"
-
-
 # DRF Spectacular
 # =============================================================================
 # https://drf-spectacular.readthedocs.io/en/latest/settings.html
