@@ -3,7 +3,7 @@ from django.db import models
 
 class Collection(models.Model):
 
-    title = models.CharField(max_length=20)
+    title = models.CharField("제목", max_length=20)
 
     class Meta:
         ordering = ["-id"]

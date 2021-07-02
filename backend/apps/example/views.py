@@ -88,7 +88,7 @@ class NestedCollectionViewSet(
             return MoveNestedCollectionSerializer
         return NestedCollectionSerializer
 
-    validate_only_actions = ["create", "partial_update"]
+    validate_only_actions = ["create", "partial_update", "move"]
 
     @property
     def filter_backends(self):
