@@ -12,5 +12,8 @@ django-cachalot   # table cache
 python-memcached   # memcached
 django-filter  # filtering
 
+# Test
+factory_boy
+
 # WSGI
 gunicorn==20.1.0
