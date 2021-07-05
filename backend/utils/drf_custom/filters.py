@@ -136,7 +136,9 @@ class OrderingFilterBackend(rest_filters.BaseFilterBackend):
                 "required": False,
                 "in": "query",
                 "description": force_str(ordering_description),
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
         ]
 
@@ -206,7 +208,9 @@ class BatchGetFilterBackend(rest_filters.BaseFilterBackend):
                 "required": True,
                 "in": "query",
                 "description": force_str(self.batch_get_description),
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             },
         ]
 
@@ -239,7 +243,9 @@ class PathVariableFilterBackend(rest_filters.BaseFilterBackend):
                 "description": ""
                 if view.action not in allow_wildcard_actions
                 else wildcard_description,
-                "schema": {"type": "string",},
+                "schema": {
+                    "type": "string",
+                },
             }
             result.append(path_param)
         return result

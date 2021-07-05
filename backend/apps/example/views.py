@@ -115,7 +115,9 @@ class NestedCollectionViewSet(
 
 
 class NestedResourceViewSet(
-    mixins.RetrieveModelMixin, mixins.PartialUpdateModelMixin, GenericViewSet,
+    mixins.RetrieveModelMixin,
+    mixins.PartialUpdateModelMixin,
+    GenericViewSet,
 ):
     # Attributes
     lookup_field = "parent__pk"

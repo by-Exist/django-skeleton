@@ -15,7 +15,9 @@ LOGGING = {
             "formatter": "app",
         },
     },
-    "loggers": {"django": {"handlers": ["file"], "level": "INFO", "propagate": True},},
+    "loggers": {
+        "django": {"handlers": ["file"], "level": "INFO", "propagate": True},
+    },
     "formatters": {
         "app": {
             "format": (

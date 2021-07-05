@@ -26,7 +26,8 @@ def get_pk_description(model, model_field):
         value_type = "unique한 값"
 
     return "{name} 리소스를 식별하는 {value_type}입니다.".format(
-        value_type=value_type, name=model._meta.verbose_name,
+        value_type=value_type,
+        name=model._meta.verbose_name,
     )
 
 
@@ -94,7 +95,9 @@ class CustomAutoSchema(AutoSchema):
                 "required": False,
                 "in": "query",
                 "description": "true일 경우 입력 필드의 유효성 검사만 수행합니다.",
-                "schema": {"type": "boolean",},
+                "schema": {
+                    "type": "boolean",
+                },
             },
         ]
 
@@ -105,7 +108,9 @@ class CustomAutoSchema(AutoSchema):
             description = ""
 
             resolved_parameter = resolve_regex_path_parameter(
-                self.path_regex, variable, self.map_renderers("format"),
+                self.path_regex,
+                variable,
+                self.map_renderers("format"),
             )
 
             if resolved_parameter:

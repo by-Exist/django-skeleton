@@ -20,7 +20,9 @@ nested_collections_router = routers.CustomNestedSimpleRouter(
     collections_router, "collections", lookup="collection"
 )
 nested_collections_router.register(
-    "nested-collections", views.NestedCollectionViewSet, basename="nested-collection",
+    "nested-collections",
+    views.NestedCollectionViewSet,
+    basename="nested-collection",
 )
 nested_resource_router = routers.NestedSingletonSimpleRouter(
     collections_router, "collections", lookup="collection"

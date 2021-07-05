@@ -199,7 +199,10 @@ class NestedCollectionViewSetTestCase(APITestCase):
         )
         url_2 = reverse(
             "nested-collection-detail",
-            kwargs={"collection_pk": "-", "pk": self.nested_collection.pk,},
+            kwargs={
+                "collection_pk": "-",
+                "pk": self.nested_collection.pk,
+            },
         )
         res_1 = self.client.get(url_1)
         res_2 = self.client.get(url_2)

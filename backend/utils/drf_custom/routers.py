@@ -131,12 +131,16 @@ class CustomNestedDefaultRouter(CustomMethodMixin, NestedMixin, DefaultRouter):
 
 
 class CustomNestedSingletonSimpleRouter(
-    CustomMethodMixin, NestedMixin, SimpleRouter,
+    CustomMethodMixin,
+    NestedMixin,
+    SimpleRouter,
 ):
     routes = custom_nested_singleton_routes
 
 
 class CustomNestedSingletonDefaultRouter(
-    CustomMethodMixin, NestedMixin, DefaultRouter,
+    CustomMethodMixin,
+    NestedMixin,
+    DefaultRouter,
 ):
     routes = custom_nested_singleton_routes
