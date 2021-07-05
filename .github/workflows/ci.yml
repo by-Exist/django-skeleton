@@ -48,10 +48,10 @@ jobs:
       - name: Run Tests
         env:
           DEBUG: True
-          DJANGO_SECRET_KEY: test_environ_secret_key
           DJANGO_SETTINGS_MODULE: config.settings.test
+          DJANGO_SECRET_KEY: test_environ_secret_key
+          DJANGO_API_VERSION: v0
           DJANGO_ALLOWED_HOSTS: "*"
-          DJANGO_API_VERSION: v1
           DJANGO_DEFAULT_DATABASE_URL: postgres://test_user:test_pw@5432/test_db
         run: |
           python backend/manage.py test --settings=${DJANGO_SETTINGS_MODULE}

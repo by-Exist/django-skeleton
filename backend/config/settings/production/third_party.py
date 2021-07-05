@@ -27,3 +27,12 @@ SPECTACULAR_SETTINGS["DESCRIPTION"] = "Backend Production api description..."
 SPECTACULAR_SETTINGS["VERSION"] = "0.0.1"
 # https://swagger.io/docs/open-source-tools/swagger-ui/usage/configuration/
 SPECTACULAR_SETTINGS["SWAGGER_UI_SETTINGS"]["supportedSubmitMethods"] = []
+
+
+# Django Cachalot
+# =============================================================================
+# https://django-cachalot.readthedocs.io/en/latest/quickstart.html#settings
+INSTALLED_APPS += ["cachalot"]
+CACHES["cachalot"] = env.cache("DJANGO_CACHALOT_CACHE_URL")
+CACHALOT_CACHE = "cachalot"
+CACHALOT_UNCACHABLE_TABLES = ["django_migrations"]

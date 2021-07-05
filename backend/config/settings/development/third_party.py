@@ -29,4 +29,8 @@ SPECTACULAR_SETTINGS["SWAGGER_UI_SETTINGS"]["displayRequestDuration"] = True
 # Django Cachalot
 # =============================================================================
 # https://django-cachalot.readthedocs.io/en/latest/quickstart.html#settings
+INSTALLED_APPS += ["cachalot"]
+CACHES["cachalot"] = env.cache("DJANGO_CACHALOT_CACHE_URL")
+CACHALOT_CACHE = "cachalot"
+CACHALOT_UNCACHABLE_TABLES = ["django_migrations"]
 PANELS_DEFAULTS += ["cachalot.panels.CachalotPanel"]
