@@ -52,6 +52,6 @@ jobs:
           DJANGO_SECRET_KEY: test_environ_secret_key
           DJANGO_API_VERSION: v0
           DJANGO_ALLOWED_HOSTS: "*"
-          DJANGO_DEFAULT_DATABASE_URL: postgres://test_user:test_pw@5432/test_db
+          DJANGO_DEFAULT_DATABASE_URL: postgres://test_user:test_pw@localhost:5432/test_db
         run: |
           python backend/manage.py test backend/ --settings=${DJANGO_SETTINGS_MODULE}
