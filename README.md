@@ -1,6 +1,6 @@
 # Django-Skeleton
 
-## [ Description ]
+## [ Intro ]
 
 - drf로 서비스를 개발할 때 필요한 기본 설정들에 대한 레포지토리입니다.
 
@@ -11,13 +11,14 @@
 ## [ Directory Structure ]
 
 ```text
+.github/workflows   : github action을 활용한 CI 작업 (format, test)
 backend/            : django 기반 Web Application Server
   apps/example/     : 예제 사이트에서 활용된 어플리케이션
     tests/          : model, view, serializer 테스팅 파일
-frontend/           : 미정
-nginx/              : Nginx 기반 Web Server (Proxy)
-docker-compose/     : 개발, 테스트, 배포 단계에서 사용될 docker-compose 파일들
-env/                : docker-compose에서 활용되는 환경변수 파일들
+frontend/           : 미정 (vue, react, ...)
+nginx/              : Proxy Web Server (Nginx)
+docker-compose/     : 개발 및 배포 단계에서 사용될 docker-compose 파일
+env/                : docker-compose에서 활용되는 환경변수 파일
 ```
 
 nginx, backend, frontend는 각자 자신의 Dockerfile을 지닙니다.
