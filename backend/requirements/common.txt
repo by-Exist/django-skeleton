@@ -1,7 +1,7 @@
 # Django
 Django==3.2
-django-environ==0.4.5  # manage environ
-Pillow==8.2.0  # Imagefield
+django-environ==0.4.5
+Pillow==8.2.0
 
 # REST API
 djangorestframework==3.12.4  # REST
@@ -11,9 +11,6 @@ drf-nested-routers  # nested router
 django-cachalot   # table cache
 python-memcached   # memcached
 django-filter  # filtering
-
-# Test
-factory_boy
 
 # WSGI
 gunicorn==20.1.0

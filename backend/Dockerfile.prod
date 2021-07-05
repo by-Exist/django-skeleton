@@ -17,6 +17,3 @@ COPY . /app
 
 # change work directory
 WORKDIR /app
-
-# set django settings module env
-ENV DJANGO_SETTINGS_MODULE=config.settings.production

@@ -14,6 +14,3 @@ RUN pip install -r /app/requirements/dev.txt
 
 # change work directory
 WORKDIR /app
-
-# set django settings module env
-ENV DJANGO_SETTINGS_MODULE=config.settings.development
