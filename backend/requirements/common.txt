@@ -8,8 +8,6 @@ djangorestframework==3.12.4  # REST
 drf-spectacular  # api document
 drf-access-policy  # permission
 drf-nested-routers  # nested router
-django-cachalot   # table cache
-python-memcached   # memcached
 django-filter  # filtering
 
 # WSGI

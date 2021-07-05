@@ -4,3 +4,6 @@
 django-debug-toolbar==3.2.1
 django-extensions
 psycopg2-binary
+django-cachalot   # table cache
+python-memcached   # memcached
+factory_boy

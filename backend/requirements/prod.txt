@@ -4,6 +4,8 @@
 django-storages==1.11.1
 boto3
 psycopg2-binary
+django-cachalot
+python-memcached
 
 # WSGI
 gevent==21.1.2
